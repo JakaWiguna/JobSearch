@@ -32,6 +32,7 @@ public class DetailJobActivity extends BaseActivity<ActivityDetailJobBinding, De
 
     @Override
     protected void initViews() {
+        binding.setLifecycleOwner(this);
         String id = getIntent().getStringExtra("id");
         binding.setLifecycleOwner(this);
         setSupportActionBar(binding.toolbar);

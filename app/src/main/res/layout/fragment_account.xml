@@ -19,7 +19,7 @@
             app:civ_border_width="2dp" />
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/name"
+            android:id="@+id/tv_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -29,6 +29,7 @@
             android:text="John Doe" />
 
         <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_sign_out"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Logout"

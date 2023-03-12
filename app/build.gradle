@@ -49,7 +49,7 @@ android {
 dependencies {
 
     implementation 'com.google.firebase:firebase-auth:21.1.0'
-    implementation 'com.facebook.android:facebook-android-sdk:[8,9)'
+    implementation 'com.facebook.android:facebook-android-sdk:12.3.0'
     implementation 'com.google.android.gms:play-services-auth:20.4.1'
 
 
@@ -76,6 +76,7 @@ dependencies {
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.2'
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.work:work-runtime:2.7.0-alpha05'
 
     implementation 'de.hdodenhof:circleimageview:3.1.0'
 

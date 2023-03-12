@@ -10,6 +10,7 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -26,6 +27,8 @@ import com.me.jobsearch.R;
 import com.me.jobsearch._core.SimpleBaseActivity;
 import com.me.jobsearch.databinding.ActivityLoginBinding;
 import com.me.jobsearch.presentation.main.MainActivity;
+
+import java.util.Arrays;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -52,45 +55,46 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
         mAuth = FirebaseAuth.getInstance();
 
         mCallbackManager = CallbackManager.Factory.create();
-        binding.btnLoginFacebook.setReadPermissions("email", "public_profile");
-        binding.btnLoginFacebook.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
-            }
-
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                Toast.makeText(LoginActivity.this, "Authentication onCancel.",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                Toast.makeText(LoginActivity.this, "Authentication onError.",
-                        Toast.LENGTH_SHORT).show();
-            }
+        binding.btnLoginFacebook.setOnClickListener(v -> {
+            LoginManager.getInstance().logInWithReadPermissions(
+                    LoginActivity.this,
+                    mCallbackManager,
+                    Arrays.asList("public_profile", "email"));
         });
+
+        binding.btnLoginFacebook.registerCallback(mCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                        handleFacebookAccessToken(loginResult.getAccessToken());
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Log.d(TAG, "facebook:onCancel");
+                        Toast.makeText(LoginActivity.this, "Authentication onCancel.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException error) {
+                        Log.d(TAG, "facebook:onError", error);
+                        Toast.makeText(LoginActivity.this, "Authentication onError.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
 
         binding.btnLoginGoogle.setOnClickListener(v -> {
-             gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                     .requestIdToken(getString(R.string.webclient_id))
-                     .requestEmail()
-                     .build();
-
-             gsc =  GoogleSignIn.getClient(this, gso);
-
-             startActivityForResult(gsc.getSignInIntent(), REQ_GOOGLE_SIGN_IN);
-        });
-
-        binding.btnSkip.setOnClickListener(v ->{
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            finish();
+            Intent signInIntent = gsc.getSignInIntent();
+            startActivityForResult(signInIntent, REQ_GOOGLE_SIGN_IN);
         });
     }
 
@@ -99,6 +103,10 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            updateUI(currentUser);
+        }
+
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
@@ -111,6 +119,7 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
                         // Sign in success, update UI with the signed-in user's information
                         Log.d(TAG, "signInWithCredential:success");
                         FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
                         Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -120,8 +129,16 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
                 });
     }
 
+    private void updateUI(FirebaseUser user) {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         mCallbackManager.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == REQ_GOOGLE_SIGN_IN) {
@@ -135,7 +152,6 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
                 Log.w(TAG, "Google sign in failed", e);
             }
         }
-        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void firebaseAuthWithGoogle(String idToken) {
@@ -145,6 +161,7 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
                     if (task.isSuccessful()) {
                         // Sign in success, update UI with the signed-in user's information
                         FirebaseUser user = mAuth.getCurrentUser();
+                        updateUI(user);
                     } else {
                         // If sign in fails, display a message to the user.
                         Toast.makeText(LoginActivity.this, "Authentication failed.",

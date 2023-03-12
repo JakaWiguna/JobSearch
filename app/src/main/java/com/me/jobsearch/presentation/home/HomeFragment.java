@@ -39,8 +39,8 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     @Override
     protected void initViews() {
-        binding.setLifecycleOwner(this);
-        viewModel.response().observe(this, this::observeResponse);
+        binding.setLifecycleOwner(getViewLifecycleOwner());
+        viewModel.response().observe(getViewLifecycleOwner(), this::observeResponse);
         initFilter();
         initAdapter();
         viewModel.onSearch(binding.etSearch.getText().toString());
