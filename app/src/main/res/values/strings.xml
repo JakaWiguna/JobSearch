@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Job Search</string>
+    <string name="facebook_app_id" translatable="false">941461173534923</string>
+    <string name="fb_login_protocol_scheme">fb941461173534923</string>
+    <string name="facebook_client_token" translatable="false">21636b9f02cce0403385b761da760da9</string>
+    <string name="go_to_website"><![CDATA[<u>Go To Website</u>]]></string>
+    <string name="webclient_id">442859485037-praq55a61ab74l4707f94phr7qprp9hq.apps.googleusercontent.com</string>
+</resources>
