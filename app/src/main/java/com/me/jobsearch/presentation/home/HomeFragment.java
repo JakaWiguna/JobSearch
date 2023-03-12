@@ -25,7 +25,6 @@ import dagger.hilt.android.AndroidEntryPoint;
 @AndroidEntryPoint
 public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewModel> {
     private static final String TAG = "DEBUG_APP";
-    private final boolean isFilterShow = false;
     private JobListAdapter adapter;
 
     @Override
@@ -44,6 +43,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
         viewModel.response().observe(this, this::observeResponse);
         initFilter();
         initAdapter();
+        viewModel.onSearch(binding.etSearch.getText().toString());
     }
 
     private void initFilter() {
@@ -91,7 +91,6 @@ public class HomeFragment extends BaseFragment<FragmentHomeBinding, HomeViewMode
 
     private void initAdapter() {
         adapter = new JobListAdapter(item -> {
-            Log.e(TAG, "initAdapter: " + item.getId());
             Intent intent = new Intent(getContext(), DetailJobActivity.class);
             intent.putExtra("id", item.getId());
             startActivity(intent);

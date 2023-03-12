@@ -1,4 +1,4 @@
-package com.me.jobsearch.presentation;
+package com.me.jobsearch.presentation.account;
 
 import android.os.Bundle;
 

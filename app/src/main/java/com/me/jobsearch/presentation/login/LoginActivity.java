@@ -1,4 +1,4 @@
-package com.me.jobsearch.presentation;
+package com.me.jobsearch.presentation.login;
 
 import android.content.Intent;
 import android.util.Log;
@@ -25,6 +25,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.me.jobsearch.R;
 import com.me.jobsearch._core.SimpleBaseActivity;
 import com.me.jobsearch.databinding.ActivityLoginBinding;
+import com.me.jobsearch.presentation.main.MainActivity;
 
 import dagger.hilt.android.AndroidEntryPoint;
 
@@ -83,6 +84,13 @@ public class LoginActivity extends SimpleBaseActivity<ActivityLoginBinding> {
              gsc =  GoogleSignIn.getClient(this, gso);
 
              startActivityForResult(gsc.getSignInIntent(), REQ_GOOGLE_SIGN_IN);
+        });
+
+        binding.btnSkip.setOnClickListener(v ->{
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
         });
     }
 

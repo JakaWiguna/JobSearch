@@ -1,4 +1,4 @@
-package com.me.jobsearch.presentation;
+package com.me.jobsearch.presentation.main;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.me.jobsearch.R;
 import com.me.jobsearch._core.SimpleBaseActivity;
 import com.me.jobsearch.databinding.ActivityMainBinding;
+import com.me.jobsearch.presentation.account.AccountFragment;
 import com.me.jobsearch.presentation.home.HomeFragment;
 
 import dagger.hilt.android.AndroidEntryPoint;

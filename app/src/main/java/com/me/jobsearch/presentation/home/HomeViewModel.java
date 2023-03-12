@@ -87,11 +87,6 @@ public class HomeViewModel extends ViewModel {
     ) {
         this.getJobListUseCase = getJobListUseCase;
         disposable = new CompositeDisposable();
-        init();
-    }
-
-    private void init() {
-        loadJobs(null, null, null);
     }
 
     public void onSearch(String searchText) {
